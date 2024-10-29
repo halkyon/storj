@@ -14,7 +14,6 @@ pipeline {
     environment {
         NPM_CONFIG_CACHE = '/npm/cache'
         GOTRACEBACK = 'all'
-        GOOGLE_APPLICATION_CREDENTIALS = credentials('spanner-nightly')
     }
     stages {
         stage('Checkout') {
@@ -121,6 +120,7 @@ pipeline {
                 COVERFLAGS = "${ env.BRANCH_NAME == 'main' ? '-coverprofile=.build/coverprofile -coverpkg=storj.io/storj/private/...,storj.io/storj/satellite/...,storj.io/storj/storagenode/...,storj.io/storj/versioncontrol/...' : ''}"
                 GOEXPERIMENT = 'nocoverageredesign'
                 STORJ_TEST_SPANNER = 'spanner://projects/storj-developer-team/instances/nightly-spanner-instance-1/databases/metainfo|spanner://projects/storj-developer-team/instances/nightly-spanner-instance-1/databases/satellite'
+                GOOGLE_APPLICATION_CREDENTIALS = credentials('spanner-nightly')
             }
             steps {
                 sh 'use-ports -from 1024 -to 10000 &'
@@ -160,9 +160,9 @@ pipeline {
             }
         }
     }
-    // post {
-    //     failure {
-    //         slackSend color: 'danger', message: "@team-satellite-events ${env.BRANCH_NAME} nightly build failed ${env.BUILD_URL}"
-    //     }
-    // }
+    post {
+        failure {
+            slackSend color: 'danger', message: "@team-satellite-events ${env.BRANCH_NAME} nightly build failed ${env.BUILD_URL}"
+        }
+    }
 }
