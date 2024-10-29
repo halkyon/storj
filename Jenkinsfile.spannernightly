@@ -15,7 +15,7 @@ pipeline {
         NPM_CONFIG_CACHE = '/npm/cache'
         GOTRACEBACK = 'all'
         GOOGLE_APPLICATION_CREDENTIALS = credentials('spanner-nightly')
-	}
+    }
     stages {
         stage('Checkout') {
             steps {
